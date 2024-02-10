@@ -1,20 +1,36 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import { quizResults, submitQuiz } from "./quizData";
+import { CustomButton } from "./utils";
 export default function QuizDoneScreen(props) {
   const quizId = props.route.params.quizId;
 
+  const quizResultsArray = [];
+  for (let i = 1; i <= Object.keys(quizResults[quizId]).length; i++) {
+    quizResultsArray.push(quizResults[quizId][i]);
+  }
+
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Quiz Done</Text>
-      <Text>Results</Text>
-      <Text>{JSON.stringify(quizResults[quizId], null, 2)}</Text>
-      <Button
+      <Text style={{
+        fontSize: 20,
+        marginBottom: 5,
+        textAlign: "center",
+        width: "80%",
+      }}>Quiz Done</Text>
+      <Text
+        style={{
+          marginBottom: 10,
+        }}
+      >Your Answers: {JSON.stringify(quizResultsArray)} </Text>
+      
+      <CustomButton
         title="Submit"
         onPress={() => {
           submitQuiz(quizId);
-          props.navigation.navigate("Home"); //can replace with quiz results page (show graph)
+          props.navigation.navigate("Home");
         }}
-      ></Button>
+      ></CustomButton>
+
     </View>
   );
 }
