@@ -37,4 +37,7 @@ export const styles = StyleSheet.create({
     textDecorationLine: "underline",
     color: "#990030",
   },
+  background: {
+    flex: 1,
+  },
 });
