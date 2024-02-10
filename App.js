@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import SignUpSuccess from "./components/SignUpSuccess";
 import QuizStart from "./components/QuizStart";
+import ProfQuiz from "./components/ProfQuiz";
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="SignUpSuccess" component={SignUpSuccess} />
         <Stack.Screen name="QuizStart" component={QuizStart} />
+        <Stack.Screen name="ProfQuiz" component={ProfQuiz} />
       </Stack.Navigator>
     </NavigationContainer>
   );

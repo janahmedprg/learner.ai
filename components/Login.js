@@ -10,6 +10,8 @@ function ProfHome({ navigation, route }) {
   const handleLogin = () => {
     if (role === "Student") {
       navigation.navigate("QuizStart");
+    } else if (role === "Professor") {
+      navigation.navigate("ProfQuiz");
     }
   };
   const handleSignUp = () => {
