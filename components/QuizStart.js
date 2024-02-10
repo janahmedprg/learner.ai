@@ -112,7 +112,8 @@ function QuestionRouter({questionsData , quizId}) {
   )
 }
 
-function Quiz({questionsData, quizId}) {
+export function Quiz(props) {
+  const {questionsData, quizId} = props.route.params
   return (
     <QuestionRouter
       questionsData={questionsData}
@@ -125,32 +126,29 @@ function Quiz({questionsData, quizId}) {
 
 //
 
-export default function QuizStart() {
+export default function QuizStart({navigation}) {
 
+  //todo: fetch tis from the backend based on quiz code
   const sampleQuestionsData = {
     questions: [
       "How satisfied are you?",
       "How much",
       "Third Question",
       "Fourth Question"
-    ]
+    ],
+    quizId: "123"
   }
-
-  const quizId = "123"
+  const quizId = sampleQuestionsData.quizId //todo get rid of quizId prop and just use one in questionsdata
 
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.text}>Enter Quiz Code</Text>
-    //   <Button
-    //     title="Go to Details"
-    //     onPress={() => navigation.navigate("Main")}
-    //   />
-    // </View>
-    <Quiz 
-      questionsData={sampleQuestionsData}
-      quizId={quizId}
-    ></Quiz>
+    <View style={styles.container}>
+      <Text>Enter Quiz Code</Text>
+      <Button
+        title="Next"
+        onPress={() => navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: quizId})}
+      />
+    </View>
   );
 }
 
