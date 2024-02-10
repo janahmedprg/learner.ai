@@ -1,11 +1,12 @@
 //@ts-check
 
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import QuizDoneScreen from './QuizDone';
 import { saveQuizAnswer, submitQuiz } from './quizData';
+import Slider from '@react-native-community/slider';
 
 
 const QuizStack = createStackNavigator();
@@ -13,16 +14,40 @@ const QuizStack = createStackNavigator();
 function RatingInput({onAnswerSelected}){
 
   return (
-    <View style={{display: "flex", flexDirection: "row"}}>
-      {["1", "2", "3", "4", "5"].map((value) => {
-        return (
-          <Button key={value}
-            title={value}
-            onPress={() => {onAnswerSelected(value)}}
-          ></Button>
-        )
-      })}
-    </View>
+    <RatingInputSlider onAnswerSelected={onAnswerSelected} />
+  )
+  // return (
+  //   <View style={{display: "flex", flexDirection: "row"}}>
+  //     {["1", "2", "3", "4", "5"].map((value) => {
+  //       return (
+  //         <Button key={value}
+  //           title={value}
+  //           onPress={() => {onAnswerSelected(value)}}
+  //         ></Button>
+  //       )
+  //     })}
+  //   </View>
+  // )
+}
+
+function RatingInputSlider({onAnswerSelected}){
+  
+  return (
+    <Slider
+      style={{
+        width: "90%", 
+        height: 60,
+        // transform: [{ scaleY: 2 }] 
+      }}
+      minimumTrackTintColor="#6879D0"
+      maximumTrackTintColor="#000000"
+      thumbTintColor="#6879D0"
+      minimumValue={1}
+      maximumValue={5}
+      value = {3}
+      step={1}
+      onValueChange={onAnswerSelected}
+    />
   )
 }
 
@@ -47,38 +72,67 @@ function QuestionScreen(props) {
   }
 
 
+  const [answer, setAnswer] = useState(3)
+  
+  const answerText = questionsData.answers ? questionsData.answers[questionNumber-1] : {
+    1: "Unfamiliar",
+    2: "Mostly Unfamiliar",
+    3: "Somewhat Unfamiliar",
+    4: "Familiar",
+    5: "Very Familiar"
+  }
+  
+
   return (
     <View style={styles.container}>
-      <Text style={{}}>
-        {isLastQuestion ? "Question " : "Question "}
-        {questionNumber}
+      <Text style={{
+        fontSize: 20,
+        marginBottom: 20
+      }}>
+        {questionsData.questions[questionNumber - 1]}
       </Text>
 
-      <RatingInput 
-        onAnswerSelected={(answer) => {
-          saveQuizAnswer(quizId, questionNumber, answer)
-          nextScreen();
-        }}
-      />
+      <RatingInput onAnswerSelected={(value) => setAnswer(value)}/>
 
-      {isLastQuestion ? 
-          <Button
-          title="Next"
-          onPress={()=> {
-            nextScreen();
-          }}
-        ></Button>
-        : 
-        <Button
-          title="Next"
-          onPress={()=> {
-            nextScreen();
-          }}
-        ></Button>
-      }
+
+
+    <Text style={{fontSize: 18}}>{answerText[answer]}</Text>
+    <Text></Text>
+
+
+
+    <CustomButton 
+      title="Next"
+      onPress={()=>{
+
+        saveQuizAnswer(quizId, questionNumber, answer)
+        nextScreen()
+      }}
+    />
       
     </View>
   )
+}
+
+function QuizIntro({navigation}) {
+  return (
+    <View style={styles.container}>
+      <Text style={{
+        fontSize: 20,
+        marginBottom: 20,
+        textAlign: "center",
+        width: "80%"
+      }}>
+        Rank how familiar you are with the upcoming topics
+      </Text>
+      <CustomButton
+        title="Start"
+        onPress={() => {
+          navigation.navigate("Question1")
+        }}
+      />
+    </View>
+  );
 }
 
 function QuestionRouter({questionsData , quizId}) {
@@ -91,11 +145,12 @@ function QuestionRouter({questionsData , quizId}) {
 
   return (
     <QuizStack.Navigator
-      initialRouteName="QuestionOne"
+      initialRouteName="QuizIntro"
       screenOptions={{
         headerShown: false, // Hide the header
       }}
     >
+      <QuizStack.Screen name="QuizIntro" component={QuizIntro} />
       {questionsNumbers.map(number => (
         <QuizStack.Screen key={number} 
           name={"Question" + number}  // used in the name to differentiate the screens, really goes off questionNumber param
@@ -129,12 +184,30 @@ export function Quiz(props) {
 export default function QuizStart({navigation}) {
 
   //todo: fetch tis from the backend based on quiz code
+  const x = {
+    1: "Unfamiliar",
+    2: "Mostly Unfamiliar",
+    3: "Somewhat Unfamiliar",
+    4: "Familiar",
+    5: "Very Familiar",
+  }
+  const y = {
+    1: "Disagree",
+    2: "Somewhat Disagree",
+    3: "Neither Disagree nor Agree",
+    4: "Somewhat Agree",
+    5: "Agree",
+  }
   const sampleQuestionsData = {
     questions: [
       "How satisfied are you?",
       "How much",
       "Third Question",
-      "Fourth Question"
+      "Fourth Question",
+      "Last Question",
+    ],
+    answers: [
+      x,x,x,x,y
     ],
     quizId: "123"
   }
@@ -163,12 +236,35 @@ export default function QuizStart({navigation}) {
         value={text}
       ></TextInput>
       <Text></Text>
-      <Button
+      
+      <CustomButton 
         title="Next"
-        onPress={() => navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: quizId})}
+        onPress={()=>{
+          navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: quizId})
+        }}
       />
     </View>
   );
+}
+
+function CustomButton({title, onPress}) {
+  return (
+    <TouchableOpacity
+        // title="Next"
+        style={{
+          width: 200,
+          height: 50,
+          backgroundColor: "#6879D0",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 10,
+          marginBottom: 10,
+        }}
+        onPress={() => onPress()}
+      >
+        <Text style={{ color: "white", fontSize: 20 }}>{title}</Text>
+      </TouchableOpacity>
+  )
 }
 
 const styles = StyleSheet.create({
