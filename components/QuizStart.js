@@ -1,7 +1,7 @@
 //@ts-check
 
-import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import QuizDoneScreen from './QuizDone';
@@ -141,9 +141,28 @@ export default function QuizStart({navigation}) {
   const quizId = sampleQuestionsData.quizId //todo get rid of quizId prop and just use one in questionsdata
 
 
+  const [text, setText] = useState('');
   return (
     <View style={styles.container}>
-      <Text>Enter Quiz Code</Text>
+      <TextInput
+        placeholder='Enter Quiz Code'
+        maxLength={4}
+        onChangeText={text => setText(text)}
+        onSubmitEditing={()=>{
+          navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: text})
+        }}
+        style={{
+          fontSize: 24,
+        borderWidth: 1,
+        borderColor: '#000',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        width: '80%',
+        textAlign: 'center',
+        }}
+        value={text}
+      ></TextInput>
+      <Text></Text>
       <Button
         title="Next"
         onPress={() => navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: quizId})}
