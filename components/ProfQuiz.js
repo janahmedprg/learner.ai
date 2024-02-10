@@ -9,7 +9,11 @@ import {
 import { styles } from "../styles/ProfQuizStyles";
 
 function QuizResults() {
-  return <Text>This is Quiz Result</Text>;
+  return (
+    <View>
+      <Text>Results of the Quiz</Text>
+    </View>
+  );
 }
 
 function QuizCreate() {
@@ -33,7 +37,10 @@ function ProfQuiz({ navigation }) {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               activeOpacity={0.9}
-              style={styles.button}
+              style={[
+                styles.button,
+                tab === "quiz" && styles.highlightedButton,
+              ]}
               onPress={() => setTab("quiz")}
             >
               <Text style={styles.buttonText}>Quiz</Text>
@@ -41,8 +48,11 @@ function ProfQuiz({ navigation }) {
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              activeOpacity={0.9}
-              style={styles.button}
+              activeOpacity={1}
+              style={[
+                styles.button,
+                tab === "results" && styles.highlightedButton,
+              ]}
               onPress={() => setTab("results")}
             >
               <Text style={styles.buttonText}>Results</Text>

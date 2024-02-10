@@ -31,4 +31,7 @@ export const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
+  highlightedButton: {
+    backgroundColor: "#B7B7B7",
+  },
 });
