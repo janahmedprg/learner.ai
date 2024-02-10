@@ -1,49 +1,87 @@
 //@ts-check
 
-import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import QuizDoneScreen from './QuizDone';
+import { saveQuizAnswer, submitQuiz } from './quizData';
 
 
 const QuizStack = createStackNavigator();
 
-
-function QuestionScreen(props) {
-  const questionNumber = props.route.params?.questionNumber || 1
-  const questionsData = props.route.params.questionsData
-
-
-  const isLastQuestion = questionNumber == questionsData.questions.length
+function RatingInput({onAnswerSelected}){
 
   return (
-    <View style={styles.container}>
-      <Text style={{}}>
-        {isLastQuestion ? "Last Question " : "Question "}
-        {questionNumber}
-      </Text>
-
-
-
-
-      <Button
-        title="Hello"
-        onPress={()=> {
-          if (isLastQuestion) {
-            props.navigation.navigate("Home")
-            return
-          }
-          props.navigation.navigate("Question" + (questionNumber+1), {
-            questionNumber: questionNumber + 1,
-            questionsData: questionsData
-          })
-        }}
-      ></Button>
+    <View style={{display: "flex", flexDirection: "row"}}>
+      {["1", "2", "3", "4", "5"].map((value) => {
+        return (
+          <Button key={value}
+            title={value}
+            onPress={() => {onAnswerSelected(value)}}
+          ></Button>
+        )
+      })}
     </View>
   )
 }
 
-function QuestionRouter({questionsData}) {
+function QuestionScreen(props) {
+  const questionNumber = props.route.params?.questionNumber || 1
+  const questionsData = props.route.params.questionsData
+  const quizId = props.route.params.quizId
+
+
+  const isLastQuestion = questionNumber == questionsData.questions.length
+
+  function nextScreen(){
+    if (isLastQuestion) {
+      props.navigation.navigate("QuizDone", {quizId: quizId})
+      return
+    }
+    props.navigation.navigate("Question" + (questionNumber+1), {
+      questionNumber: questionNumber + 1,
+      questionsData: questionsData,
+      quizId: quizId
+    })
+  }
+
+
+  return (
+    <View style={styles.container}>
+      <Text style={{}}>
+        {isLastQuestion ? "Question " : "Question "}
+        {questionNumber}
+      </Text>
+
+      <RatingInput 
+        onAnswerSelected={(answer) => {
+          saveQuizAnswer(quizId, questionNumber, answer)
+          nextScreen();
+        }}
+      />
+
+      {isLastQuestion ? 
+          <Button
+          title="Next"
+          onPress={()=> {
+            nextScreen();
+          }}
+        ></Button>
+        : 
+        <Button
+          title="Next"
+          onPress={()=> {
+            nextScreen();
+          }}
+        ></Button>
+      }
+      
+    </View>
+  )
+}
+
+function QuestionRouter({questionsData , quizId}) {
 
   const numQuestions = questionsData.questions.length
   const questionsNumbers = []
@@ -64,45 +102,72 @@ function QuestionRouter({questionsData}) {
           component={QuestionScreen} 
           initialParams={{
             questionNumber: 1,
-            questionsData: questionsData
+            questionsData: questionsData,
+            quizId: quizId
           }}
         />
       ))}
+      <QuizStack.Screen name="QuizDone" component={QuizDoneScreen} />
     </QuizStack.Navigator>
   )
 }
 
-function Quiz({questionsData}){
+export function Quiz(props) {
+  const {questionsData, quizId} = props.route.params
   return (
     <QuestionRouter
       questionsData={questionsData}
+      quizId={quizId}
     />
   )
 }
 
-export default function QuizStart() {
+//
 
+//
+
+export default function QuizStart({navigation}) {
+
+  //todo: fetch tis from the backend based on quiz code
   const sampleQuestionsData = {
     questions: [
       "How satisfied are you?",
       "How much",
       "Third Question",
       "Fourth Question"
-    ]
+    ],
+    quizId: "123"
   }
+  const quizId = sampleQuestionsData.quizId //todo get rid of quizId prop and just use one in questionsdata
 
 
+  const [text, setText] = useState('');
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.text}>Enter Quiz Code</Text>
-    //   <Button
-    //     title="Go to Details"
-    //     onPress={() => navigation.navigate("Main")}
-    //   />
-    // </View>
-    <Quiz 
-      questionsData={sampleQuestionsData}
-    ></Quiz>
+    <View style={styles.container}>
+      <TextInput
+        placeholder='Enter Quiz Code'
+        maxLength={4}
+        onChangeText={text => setText(text)}
+        onSubmitEditing={()=>{
+          navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: text})
+        }}
+        style={{
+          fontSize: 24,
+        borderWidth: 1,
+        borderColor: '#000',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        width: '80%',
+        textAlign: 'center',
+        }}
+        value={text}
+      ></TextInput>
+      <Text></Text>
+      <Button
+        title="Next"
+        onPress={() => navigation.navigate("Quiz", {questionsData: sampleQuestionsData, quizId: quizId})}
+      />
+    </View>
   );
 }
 
@@ -111,7 +176,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    color: "red"
+    justifyContent: 'center'
   },
 });
