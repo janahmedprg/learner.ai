@@ -4,46 +4,84 @@ import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import QuizDoneScreen from './QuizDone';
+import { saveQuizAnswer, submitQuiz } from './quizData';
 
 
 const QuizStack = createStackNavigator();
 
-
-function QuestionScreen(props) {
-  const questionNumber = props.route.params?.questionNumber || 1
-  const questionsData = props.route.params.questionsData
-
-
-  const isLastQuestion = questionNumber == questionsData.questions.length
+function RatingInput({onAnswerSelected}){
 
   return (
-    <View style={styles.container}>
-      <Text style={{}}>
-        {isLastQuestion ? "Last Question " : "Question "}
-        {questionNumber}
-      </Text>
-
-
-
-
-      <Button
-        title="Hello"
-        onPress={()=> {
-          if (isLastQuestion) {
-            props.navigation.navigate("Home")
-            return
-          }
-          props.navigation.navigate("Question" + (questionNumber+1), {
-            questionNumber: questionNumber + 1,
-            questionsData: questionsData
-          })
-        }}
-      ></Button>
+    <View style={{display: "flex", flexDirection: "row"}}>
+      {["1", "2", "3", "4", "5"].map((value) => {
+        return (
+          <Button key={value}
+            title={value}
+            onPress={() => {onAnswerSelected(value)}}
+          ></Button>
+        )
+      })}
     </View>
   )
 }
 
-function QuestionRouter({questionsData}) {
+function QuestionScreen(props) {
+  const questionNumber = props.route.params?.questionNumber || 1
+  const questionsData = props.route.params.questionsData
+  const quizId = props.route.params.quizId
+
+
+  const isLastQuestion = questionNumber == questionsData.questions.length
+
+  function nextScreen(){
+    if (isLastQuestion) {
+      props.navigation.navigate("QuizDone", {quizId: quizId})
+      return
+    }
+    props.navigation.navigate("Question" + (questionNumber+1), {
+      questionNumber: questionNumber + 1,
+      questionsData: questionsData,
+      quizId: quizId
+    })
+  }
+
+
+  return (
+    <View style={styles.container}>
+      <Text style={{}}>
+        {isLastQuestion ? "Question " : "Question "}
+        {questionNumber}
+      </Text>
+
+      <RatingInput 
+        onAnswerSelected={(answer) => {
+          saveQuizAnswer(quizId, questionNumber, answer)
+          nextScreen();
+        }}
+      />
+
+      {isLastQuestion ? 
+          <Button
+          title="Next"
+          onPress={()=> {
+            nextScreen();
+          }}
+        ></Button>
+        : 
+        <Button
+          title="Next"
+          onPress={()=> {
+            nextScreen();
+          }}
+        ></Button>
+      }
+      
+    </View>
+  )
+}
+
+function QuestionRouter({questionsData , quizId}) {
 
   const numQuestions = questionsData.questions.length
   const questionsNumbers = []
@@ -64,21 +102,28 @@ function QuestionRouter({questionsData}) {
           component={QuestionScreen} 
           initialParams={{
             questionNumber: 1,
-            questionsData: questionsData
+            questionsData: questionsData,
+            quizId: quizId
           }}
         />
       ))}
+      <QuizStack.Screen name="QuizDone" component={QuizDoneScreen} />
     </QuizStack.Navigator>
   )
 }
 
-function Quiz({questionsData}){
+function Quiz({questionsData, quizId}) {
   return (
     <QuestionRouter
       questionsData={questionsData}
+      quizId={quizId}
     />
   )
 }
+
+//
+
+//
 
 export default function QuizStart() {
 
@@ -91,6 +136,8 @@ export default function QuizStart() {
     ]
   }
 
+  const quizId = "123"
+
 
   return (
     // <View style={styles.container}>
@@ -102,6 +149,7 @@ export default function QuizStart() {
     // </View>
     <Quiz 
       questionsData={sampleQuestionsData}
+      quizId={quizId}
     ></Quiz>
   );
 }
@@ -111,7 +159,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    color: "red"
+    justifyContent: 'center'
   },
 });
