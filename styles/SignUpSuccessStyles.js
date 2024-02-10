@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
   link: {
     marginTop: 20,
-    color: "#6879D0",
+    color: "#990030",
     textDecorationLine: "underline",
   },
 });

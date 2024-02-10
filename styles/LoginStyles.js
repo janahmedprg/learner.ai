@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: "#6879D0",
+    backgroundColor: "#990030",
     width: "80%",
     height: 40,
     alignItems: "center",
@@ -35,6 +35,6 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 14,
     textDecorationLine: "underline",
-    color: "#6879D0",
+    color: "#990030",
   },
 });
