@@ -16,10 +16,12 @@ export default function QuizDoneScreen(props) {
         marginBottom: 5,
         textAlign: "center",
         width: "80%",
+        fontFamily: "monospace"
       }}>Quiz Done</Text>
       <Text
         style={{
           marginBottom: 10,
+          fontFamily: "monospace"
         }}
       >Your Answers: {JSON.stringify(quizResultsArray)} </Text>
       

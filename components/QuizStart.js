@@ -90,6 +90,7 @@ function QuestionScreen(props) {
         style={{
           fontSize: 20,
           marginBottom: 20,
+          fontFamily: "monospace"
         }}
       >
         {questionsData.questions[questionNumber - 1]}
@@ -97,7 +98,7 @@ function QuestionScreen(props) {
 
       <RatingInput onAnswerSelected={(value) => setAnswer(value)} />
 
-      <Text style={{ fontSize: 18 }}>{answerText[answer]}</Text>
+      <Text style={{ fontSize: 18, fontFamily: "monospace"}}>{answerText[answer]}</Text>
       <Text></Text>
 
       <CustomButton
@@ -120,6 +121,7 @@ function QuizIntro({ navigation }) {
           marginBottom: 20,
           textAlign: "center",
           width: "80%",
+          fontFamily: "monospace"
         }}
       >
         Rank how familiar you are with the upcoming topics
@@ -225,6 +227,7 @@ export default function QuizStart({ navigation }) {
           paddingVertical: 5,
           width: "80%",
           textAlign: "center",
+          fontFamily: "monospace"
         }}
         value={text}
       ></TextInput>
@@ -258,7 +261,7 @@ function CustomButton({ title, onPress }) {
       }}
       onPress={() => onPress()}
     >
-      <Text style={{ color: "white", fontSize: 20 }}>{title}</Text>
+      <Text style={{ color: "white", fontSize: 20, fontFamily: "monospace" }}>{title}</Text>
     </TouchableOpacity>
   );
 }

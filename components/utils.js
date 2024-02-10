@@ -12,10 +12,11 @@ export function CustomButton({ title, onPress }) {
           alignItems: "center",
           borderRadius: 10,
           marginBottom: 10,
+          fontFamily: "monospace"
         }}
         onPress={() => onPress()}
       >
-        <Text style={{ color: "white", fontSize: 20 }}>{title}</Text>
+        <Text style={{ color: "white", fontSize: 20, fontFamily: "monospace" }}>{title}</Text>
       </TouchableOpacity>
     );
   }
