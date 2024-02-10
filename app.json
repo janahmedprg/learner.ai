@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "learner.ai",
+    "slug": "learner.ai",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
