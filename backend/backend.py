@@ -4,6 +4,7 @@ from flask import Flask, request
 from pymongo import MongoClient
 from bson import json_util
 import json
+from typing import List
 
 load_dotenv()
 
@@ -45,7 +46,7 @@ def hello_world():
 
 
 
-def createQuiz(quizCode: str, questions: list[str], questionTypes: list[str]=None):
+def createQuiz(quizCode: str, questions: List[str], questionTypes: List[str]=None):
     print(quizCode)
     print(questions)
 
@@ -59,7 +60,7 @@ def createQuiz(quizCode: str, questions: list[str], questionTypes: list[str]=Non
 def getQuizByCode(quizCode: str):
     return quiz_collection.find_one({"quizCode": quizCode}, sort=[("_id", -1)]) # if thees multiple pick the most recent one
 
-def submitStudentAnswers(quizCode: str, answers: list[int], studentId=None):
+def submitStudentAnswers(quizCode: str, answers: List[int], studentId=None):
     print(quizCode)
     print(answers)
 
