@@ -3,8 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: "column",
   },
   footer: {
     position: "absolute",
@@ -33,5 +32,73 @@ export const styles = StyleSheet.create({
   },
   highlightedButton: {
     backgroundColor: "#B7B7B7",
+  },
+  headerWrap: {
+    padding: 50,
+    backgroundColor: "#990030",
+    width: "100%",
+    alignItems: "center",
+  },
+  headerText: {
+    marginTop: 10,
+    fontFamily: "monospace",
+    fontWeight: "bold",
+    fontSize: 36,
+    color: "white",
+  },
+  quizResultsContainer: {
+    flex: 0.3,
+    justifyContent: "space-between",
+  },
+  quizResultsContent: {
+    flex: 0.3,
+  },
+  quizCreateContainer: {
+    flex: 0.3,
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  input: {
+    width: "70%",
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    marginRight: 20,
+    fontSize: 16,
+    fontFamily: "monospace",
+  },
+  inputContainer: {
+    width: "100%",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  scrollView: {
+    width: "100%",
+    flexGrow: 0,
+  },
+  scrollContainerStyle: { alignItems: "center" },
+  topicsText: {
+    fontSize: 16,
+    fontFamily: "monospace",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  buttonCreate: {
+    backgroundColor: "#990030",
+    padding: 10,
+  },
+  buttonCreateText: {
+    fontFamily: "monospace",
+    color: "white",
+    fontSize: 16,
+  },
+  topicsTextCode: {
+    fontFamily: "monospace",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
