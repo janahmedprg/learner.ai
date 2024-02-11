@@ -15,7 +15,7 @@ def parse_json(data):
 if not os.environ["MONGO_CONNECTION"]:
     raise Exception("MONGO_CONNECTION env var not set")
 
-client = MongoClient(os.environ["MONGO_CONNECTION"], ssl_cert_reqs=ssl.CERT_NONE)
+client = MongoClient(os.environ["MONGO_CONNECTION"])
 db = client["Learner-Ai"]
 
 quiz_collection = db["Quizzes"]
