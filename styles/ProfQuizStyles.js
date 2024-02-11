@@ -75,6 +75,9 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     paddingLeft: 20,
     paddingRight: 20,
+    borderTopWidth: 1,
+    paddingTop: 10,
+    borderBlockColor: "gray",
   },
   scrollView: {
     width: "100%",
@@ -100,5 +103,27 @@ export const styles = StyleSheet.create({
     fontFamily: "monospace",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  chatContainer: {
+    paddingVertical: 10,
+  },
+  messageContainer: {
+    marginBottom: 10,
+    paddingHorizontal: 15,
+  },
+  userMessage: {
+    backgroundColor: "#D3D3D3",
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: "flex-end",
+    fontFamily: "monospace",
+  },
+  assistantMessage: {
+    backgroundColor: "#990030",
+    color: "white",
+    fontFamily: "monospace",
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: "flex-start",
   },
 });
