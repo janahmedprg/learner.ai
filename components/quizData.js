@@ -1,25 +1,23 @@
-import { backendUrl } from "./globals"
+import { backendUrl } from "./globals";
 
-
-export const quizResults = {}
+export const quizResults = {};
 export function saveQuizAnswer(questionairId, questionNumber, answer) {
   if (quizResults[questionairId] == undefined) {
-    quizResults[questionairId] = []
+    quizResults[questionairId] = [];
   }
-  quizResults[questionairId][questionNumber] = answer
+  quizResults[questionairId][questionNumber - 1] = answer;
 }
 
-
 export async function submitQuiz(questionairId) {
-
-  x = backendUrl + `submit-quiz?${new URLSearchParams({
+  x =
+    backendUrl +
+    `submit-quiz?${new URLSearchParams({
       quizCode: questionairId,
-      answers: quizResults[questionairId]
-    })
-  }`
+      answers: quizResults[questionairId],
+    })}`;
 
-  console.log("submiting", x)
-  await fetch(x) 
+  console.log("submiting", x);
+  await fetch(x);
 
-  return
+  return;
 }

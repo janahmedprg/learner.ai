@@ -12,6 +12,7 @@ import { quizResults } from "./quizData";
 import RadarChart from "./SpiderGraph";
 import axios from "axios";
 import { CHATGPT_API_KEY } from "../env";
+import { backendUrl } from "./globals";
 
 function QuizResults({
   code,
@@ -22,6 +23,7 @@ function QuizResults({
   setTab,
   chatHistory,
   setChatHistory,
+  data,
 }) {
   const handleNewQuiz = () => {
     setTab("quiz");
@@ -113,28 +115,7 @@ function QuizResults({
                 graphSize={400}
                 scaleCount={5}
                 numberInterval={2}
-                data={[
-                  {
-                    Int: 0.7,
-                    Vit: 1,
-                    Str: 0.9,
-                    Def: 0.67,
-                    Agi: 0.8,
-                    Luck: 1,
-                    Test: 0.1,
-                    Testing: 0.1,
-                  },
-                  {
-                    Int: 1,
-                    Vit: 0.1,
-                    Str: 0.2,
-                    Def: 0.5,
-                    Agi: 0.8,
-                    Luck: 0.4,
-                    Test: 0.3,
-                    Testing: 1,
-                  },
-                ]}
+                data={data}
                 options={{
                   graphShape: 1,
                   showAxis: true,
@@ -257,8 +238,20 @@ function QuizCreate({
     setInputs(newInputs);
   };
   const handleSubmit = () => {
+    const postData = {
+      quizCode: code,
+      questions: inputs.join(","),
+    };
+    fetch(
+      backendUrl +
+        "create-quiz?quizCode=" +
+        postData.quizCode +
+        "&questions=" +
+        postData.questions
+    ).catch((e) => {
+      console.log("Couldn't find that quiz");
+    });
     setSubmitted(true);
-    console.log("Handle submit to backend!");
   };
   const handleNewQuiz = () => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -383,9 +376,8 @@ function ProfQuiz({ navigation }) {
     {
       Derivatives: 0.7,
       Integrals: 1,
-      "Power Series": 0.9,
+      Logs: 0.9,
       Trig: 1,
-      "Visual learner": 0.8,
     },
   ]);
 
@@ -401,10 +393,69 @@ function ProfQuiz({ navigation }) {
       .join("\n");
   };
 
+  const transformData = (questionData, scores) => {
+    // Initialize an empty object to store transformed data
+    const transformedData = {};
+
+    // console.log(code);
+    // console.log(questionData);
+    // Iterate over the questions and scores arrays
+    questionData.questions.forEach((question, index) => {
+      // Assign each question to its respective score in the transformed data object
+      transformedData[question] = scores[index];
+    });
+
+    return transformedData;
+  };
+
   const handleResultsTab = async () => {
     if (tab !== "results") {
       if (submitted) {
         setSpinner(true);
+        // let fetchedData; // Declare fetchedData variable
+
+        // fetch(backendUrl + "get-average-quiz?quizCode=" + code)
+        //   .then((response) => {
+        //     // Check if the response is successful
+        //     if (!response.ok) {
+        //       throw new Error("Network response was not ok");
+        //     }
+        //     // Parse the JSON response
+        //     return response.json();
+        //   })
+        //   .then((data) => {
+        //     // Assign the parsed JSON data to fetchedData
+        //     fetchedData = data;
+        //     console.log("Fetched data:", fetchedData);
+        //   })
+        //   .catch((error) => {
+        //     // Handle errors
+        //     console.error("Error fetching data:", error);
+        //   });
+        // fetch(backendUrl + "get-quiz?quizCode=" + code)
+        //   .then((response) => {
+        //     // Check if the response is successful
+        //     if (!response.ok) {
+        //       throw new Error("Network response was not ok");
+        //     }
+        //     // Parse the JSON response
+        //     return response.json();
+        //   })
+        //   .then((data) => {
+        //     // Assign the parsed JSON data to the questionData variable
+        //     questionData = data;
+        //     console.log("Fetched data:", questionData);
+        //   })
+        //   .catch((error) => {
+        //     // Handle errors
+        //     console.error("Error fetching data:", error);
+        //   });
+        // console.log(backendUrl + "get-quiz?quizCode=" + code);
+        // console.log(backendUrl + "get-average-quiz?quizCode=" + code);
+        // console.log(fetchedData);
+
+        // console.log(questionData);
+        // const transformedData = transformData(questionData, fetchedData);
         const commaSeparatedString = convertDataToString(data);
         try {
           const response = await axios.post(
@@ -438,6 +489,7 @@ function ProfQuiz({ navigation }) {
         } catch (error) {
           console.error("Error sending message to ChatGPT:", error);
         }
+        // setData([transformedData]);
         setSpinner(false);
       }
 
@@ -479,6 +531,7 @@ function ProfQuiz({ navigation }) {
           setTab={setTab}
           chatHistory={chatHistory}
           setChatHistory={setChatHistory}
+          data={data}
         />
       )}
       <View style={styles.footer}>

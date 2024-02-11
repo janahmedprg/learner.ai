@@ -6,10 +6,9 @@ export default function QuizDoneScreen(props) {
   const quizId = props.route.params.quizId;
 
   const quizResultsArray = [];
-  for (let i = 1; i <= Object.keys(quizResults[quizId]).length; i++) {
+  for (let i = 0; i < Object.keys(quizResults[quizId]).length; i++) {
     quizResultsArray.push(quizResults[quizId][i]);
   }
-
 
   const [couldntSumbit, setCouldntSumbit] = useState(false);
 
@@ -38,17 +37,20 @@ export default function QuizDoneScreen(props) {
       <CustomButton
         title="Submit"
         onPress={() => {
-          submitQuiz(quizId).then(() => {
-            props.navigation.navigate("Home");
-          })
-          .catch((e)=>{
-            console.warn(e)
-            setCouldntSumbit(true)
-          })
+          submitQuiz(quizId)
+            .then(() => {
+              props.navigation.navigate("Home");
+            })
+            .catch((e) => {
+              console.warn(e);
+              setCouldntSumbit(true);
+            });
         }}
       ></CustomButton>
 
-      {couldntSumbit && <Text style={{color: "red"}}>Something went wrong</Text>}
+      {couldntSumbit && (
+        <Text style={{ color: "red" }}>Something went wrong</Text>
+      )}
     </View>
   );
 }
