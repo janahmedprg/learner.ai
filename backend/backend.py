@@ -67,6 +67,17 @@ def submitStudentAnswers(quizCode: str, answers: list[int], studentId=None):
         "quizCode": quizCode, "answers": answers, "studentId": studentId
     })
 
+
+def getAverageStudentAnswers(quizCode: str):
+    
+    student_answers = student_answer_collection.find({"quizCode": quizCode})
+    print(student_answers)
+
+    # find average
+    
+
+    return
+
 # 
 
 @app.route("/create-quiz")
@@ -100,8 +111,33 @@ def get_quiz_endpoint():
 
     return parse_json(quiz)
 
+@app.route("/submit-quiz")
+def submit_quiz_endpoint():
 
+    quizCode = request.args.get("quizCode")
+    answers = request.args.get("answers")
+    studentId = request.args.get("studentId") or None
 
+    if not quizCode or not answers:
+        return "Please provide quizCode and answers"
+
+    answers = answers.split(",")
+
+    submitStudentAnswers(quizCode, answers, studentId)
+
+    return f"submitted to {quizCode}"
+
+@app.route("/get-average-quiz")
+def get_average_quiz_endpoint():
+
+    quizCode = request.args.get("quizCode")
+
+    if not quizCode:
+        return "Please provide quizCode"
+
+    getAverageStudentAnswers(quizCode)
+
+    return "todo"
 
 
 """
