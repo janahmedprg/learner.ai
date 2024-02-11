@@ -14,6 +14,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import QuizDoneScreen from "./QuizDone";
 import { saveQuizAnswer, submitQuiz } from "./quizData";
 import Slider from "@react-native-community/slider";
+import { backendUrl } from "./globals";
 
 const QuizStack = createStackNavigator();
 
@@ -74,15 +75,22 @@ function QuestionScreen(props) {
 
   const [answer, setAnswer] = useState(3);
 
-  const answerText = questionsData.answers
-    ? questionsData.answers[questionNumber - 1]
-    : {
-        1: "Unfamiliar",
-        2: "Mostly Unfamiliar",
-        3: "Somewhat Unfamiliar",
-        4: "Familiar",
-        5: "Very Familiar",
-      };
+
+  const x = {
+    1: "Unfamiliar",
+    2: "Mostly Unfamiliar",
+    3: "Somewhat Unfamiliar",
+    4: "Familiar",
+    5: "Very Familiar",
+  };
+  const y = {
+    1: "Disagree",
+    2: "Somewhat Disagree",
+    3: "Neither Disagree nor Agree",
+    4: "Somewhat Agree",
+    5: "Agree",
+  };
+  const answerText = questionsData.type[questionNumber - 1] == "topic" ? x : y;
 
   return (
     <View style={styles.container}>
@@ -181,20 +189,9 @@ export function Quiz(props) {
 
 export default function QuizStart({ navigation }) {
   //todo: fetch tis from the backend based on quiz code
-  const x = {
-    1: "Unfamiliar",
-    2: "Mostly Unfamiliar",
-    3: "Somewhat Unfamiliar",
-    4: "Familiar",
-    5: "Very Familiar",
-  };
-  const y = {
-    1: "Disagree",
-    2: "Somewhat Disagree",
-    3: "Neither Disagree nor Agree",
-    4: "Somewhat Agree",
-    5: "Agree",
-  };
+
+
+
   const sampleQuestionsData = {
     questions: [
       "How satisfied are you?",
@@ -203,24 +200,48 @@ export default function QuizStart({ navigation }) {
       "Fourth Question",
       "Last Question",
     ],
-    answers: [x, x, x, x, y],
+    type: ["topic", "topic", "topic", "topic", "statement"],
     quizId: "123",
   };
   const quizId = sampleQuestionsData.quizId; //todo get rid of quizId prop and just use one in questionsdata
 
-  const [text, setText] = useState("");
+
+  const [codeText, setCodeText] = useState("");
+
+  const [couldntFind, setCouldntFind] = useState(false);
+  
+  async function onSubmit(){
+    const quizCode = codeText;
+    
+    console.log(backendUrl + "get-quiz?quizCode=" + quizCode)
+    fetch(backendUrl + "get-quiz?quizCode=" + quizCode)
+      .then((r)=>r.json())
+      .then((x)=>{
+        const questionsData = {
+          questions: x.questions,
+          type: x.questionTypes,
+          quizId: x.quizCode
+        }
+        const quizId = questionsData.quizId
+
+        console.log("questionsData", questionsData)
+
+        navigation.navigate("Quiz", { questionsData: questionsData, quizId: quizId })
+      })
+      .catch((e)=>{
+        setCouldntFind(true)
+        console.log("Couldn't find that quiz")
+      })
+
+  }
+  
   return (
     <View style={styles.container}>
       <TextInput
         placeholder="Enter Survey Code"
         maxLength={4}
-        onChangeText={(text) => setText(text)}
-        onSubmitEditing={() => {
-          navigation.navigate("Quiz", {
-            questionsData: sampleQuestionsData,
-            quizId: text,
-          });
-        }}
+        onChangeText={(text) => setCodeText(text)}
+        onSubmitEditing={onSubmit}
         style={{
           fontSize: 24,
           borderWidth: 1,
@@ -231,19 +252,15 @@ export default function QuizStart({ navigation }) {
           textAlign: "center",
           fontFamily: "monospace",
         }}
-        value={text}
+        value={codeText}
       ></TextInput>
       <Text></Text>
 
       <CustomButton
         title="Next"
-        onPress={() => {
-          navigation.navigate("Quiz", {
-            questionsData: sampleQuestionsData,
-            quizId: quizId,
-          });
-        }}
+        onPress={onSubmit}
       />
+      {couldntFind && <Text>Couldn't find that survey</Text>}
     </View>
   );
 }

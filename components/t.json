@@ -1,0 +1,34 @@
+{   
+    "_bodyBlob": {
+        "_data": {
+            "__collector": [Object
+            ],
+            "blobId": "db846398-5cbf-4877-80c2-f210963576eb",
+            "offset": 0,
+            "size": 23
+        }
+    },
+    "_bodyInit": {
+        "_data": {
+            "__collector": [Object
+            ],
+            "blobId": "db846398-5cbf-4877-80c2-f210963576eb",
+            "offset": 0,
+            "size": 23
+        }
+    },
+    "bodyUsed": false,
+    "headers": {
+        "map": {
+            "content-length": "23",
+            "content-type": "text/html; charset=utf-8",
+            "date": "Sun, 11 Feb 2024 10:20:53 GMT",
+            "server": "railway"
+        }
+    },
+    "ok": true,
+    "status": 200,
+    "statusText": "",
+    "type": "default",
+    "url": "https://learnerai-production.up.railway.app/get-quiz?code=abcd"
+}
