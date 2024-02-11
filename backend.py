@@ -1,8 +1,12 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
-from flask import Flask, request
+import bson
+from flask import Flask, request, jsonify
 from pymongo import MongoClient
+
+# Declare Flask app
+app = Flask(__name__)
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://a:h4S44Ru5M4R9qMDU@learnerai.xtsb7bl.mongodb.net")  # Update with your MongoDB connection string
@@ -11,19 +15,81 @@ client = MongoClient("mongodb+srv://a:h4S44Ru5M4R9qMDU@learnerai.xtsb7bl.mongodb
 db = client["questions"]  
 
 # Access a collection
-questions = db["questions"] 
+answers = db["answers"] 
+surveys = db["surveys"]
 
+@app.route("/")
+def main():
+    return "<b>Bazinga</b>"
 
-def submitStudentQuizAnswers(quizId:int, answers:list[int], studentId=None):
+#@app.route('/submit_answers')
+def submit_student_answers(quizId:int, anslist:list[float], studentId=None):
     # answers can be an array of numbers
-    questions.insert_one({str(quizId):answers})
+    answers.insert_one({"Quiz ID: ":str(quizId), "Answers: ":anslist})
     
+@app.route('/get_survey_questions')
+def get_survey_questions():
+    # Read data from MongoDB collection
+    cursor = surveys.find()
+    arr = [bson.BSON.decode(doc) for doc in cursor]
+    return arr
 
-id = ""
-for i in range(4):
-    id += chr(random.randint(65,90))
-    
-submitStudentQuizAnswers(id,[1,2,2,3,3])
+@app.route('/create_survey_with_topics')
+def create_survey_with_topics():
+    topics = request.args.get("topics").split(",")
+    for t in topics:
+        surveys.insert_one({"Question":"How comfortable do you feel with " + str(t)})
+
+    selected = request.args.get("selected").split(",")
+    for s in selected:
+        surveys.insert_one({"Question":s}) #professors write these questions themselves
+    return
+
+@app.route('/accept_student_surveys')
+def accept_student_survey_answers(answers:list[int]):
+    return
+
+@app.route('/get_all_answers')
+def get_all_student_answers(): #from mongo
+    anslist = {} 
+    for doc in answers.find():
+        anslist[doc.get("Quiz ID: ")] = doc.get("Answers: ", [])
+    return anslist
+
+# @app.route('/get_averages')
+# def get_averages():
+#     averages = []
+#     anslist = [] 
+#     for doc in answers.find():
+#         anslist.extend(doc.get("Answers: ", []))
+#     for a in anslist:
+        
+#     return averages
+        
+# print(get_averages())
+
+# #generate random id
+# def generate_id() -> str:
+#     id = ""
+#     for i in range(4):
+#         id += chr(random.randint(65,90))
+#     return id
+
+@app.route("/id")
+def getid():
+    id = request.args.get("quizId").split(",")
+
+@app.route("/quiz")
+def accept_quiz_data():
+    quizId = request.args.get("quizId")
+    anslist = request.args.get("answers").split(",")
+    #note to self only store the averages
+    # if not anslist.empty() and answers.find(quizId):
+    #     for a in anslist:
+    #         anslist[quizId]
+    submit_student_answers(quizId, anslist)
+
+app.run()
 
 #pass
 """
