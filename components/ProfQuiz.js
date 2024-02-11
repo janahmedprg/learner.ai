@@ -14,6 +14,10 @@ function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
   const handleNewQuiz = () => {
     setTab("quiz");
   };
+  const handleBrandNewQuiz = () => {
+    setSubmitted(false);
+    setTab("quiz");
+  };
   return (
     <View style={styles.quizResultsContainer}>
       <View style={styles.headerWrap}>
@@ -65,6 +69,8 @@ function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
                     Def: 0.67,
                     Agi: 0.8,
                     Luck: 1,
+                    Test: 0.1,
+                    Testing: 0.1,
                   },
                   {
                     Int: 1,
@@ -73,6 +79,8 @@ function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
                     Def: 0.5,
                     Agi: 0.8,
                     Luck: 0.4,
+                    Test: 0.3,
+                    Testing: 1,
                   },
                 ]}
                 options={{
@@ -80,13 +88,27 @@ function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
                   showAxis: true,
                   showIndicator: true,
                   colorList: ["blue", "red"],
-                  dotList: [false, true],
+                  dotList: [false, false],
                 }}
               />
+              <TouchableOpacity
+                onPress={() => handleBrandNewQuiz()}
+                style={styles.buttonCreate}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontFamily: "monospace",
+                    fontSize: 20,
+                    padding: 5,
+                  }}
+                >
+                  New Survey
+                </Text>
+              </TouchableOpacity>
             </ScrollView>
           </View>
         )}
-        {submitted && <View></View>}
       </View>
     </View>
   );
