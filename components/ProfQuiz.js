@@ -10,13 +10,39 @@ import {
 import { styles } from "../styles/ProfQuizStyles";
 import { quizResults } from "./quizData";
 
-function QuizResults() {
+function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
+  const handleNewQuiz = () => {
+    setTab("quiz");
+  };
   return (
     <View style={styles.quizResultsContainer}>
       <View style={styles.headerWrap}>
         <Text style={styles.headerText}>Results</Text>
       </View>
-      <View style={styles.quizResultsContent}></View>
+      <View style={styles.quizResultsContent}>
+        {!submitted && (
+          <Text style={[styles.topicsTextCode, { marginTop: 20 }]}>
+            Please create and submit a survey.
+          </Text>
+        )}
+        {!submitted && (
+          <TouchableOpacity
+            onPress={() => handleNewQuiz()}
+            style={[styles.buttonCreate, { marginTop: 20 }]}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontFamily: "monospace",
+                fontSize: 20,
+                padding: 5,
+              }}
+            >
+              New Survey
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }
@@ -57,9 +83,15 @@ function QuizCreate({ code, setCode, submitted, setSubmitted }) {
   return (
     <View style={styles.quizCreateContainer}>
       <View style={styles.headerWrap}>
-        <Text style={styles.headerText}>Create Quiz</Text>
+        <Text style={styles.headerText}>Create Survey</Text>
       </View>
-      {!submitted && <Text style={styles.topicsText}>Add your topics:</Text>}
+      {!submitted && (
+        <Text
+          style={[styles.topicsTextCode, { marginTop: 20, marginBottom: 20 }]}
+        >
+          Add your topics:
+        </Text>
+      )}
       {!submitted && (
         <View style={{ height: 425, width: "100%" }}>
           <ScrollView
@@ -134,7 +166,7 @@ function QuizCreate({ code, setCode, submitted, setSubmitted }) {
               padding: 5,
             }}
           >
-            New Quiz
+            New Survey
           </Text>
         </TouchableOpacity>
       )}
@@ -175,6 +207,8 @@ function ProfQuiz({ navigation }) {
             setCode={setCode}
             submitted={submitted}
             setSubmitted={setSubmitted}
+            tab={tab}
+            setTab={setTab}
           />
         )}
         <View style={styles.footer}>
@@ -187,7 +221,7 @@ function ProfQuiz({ navigation }) {
               ]}
               onPress={() => setTab("quiz")}
             >
-              <Text style={styles.buttonText}>Quiz</Text>
+              <Text style={styles.buttonText}>Survey</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>

@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   quizResultsContent: {
-    flex: 0.3,
+    alignItems: "center",
   },
   quizCreateContainer: {
     flex: 0.3,

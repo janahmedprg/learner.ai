@@ -11,20 +11,26 @@ export default function QuizDoneScreen(props) {
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{
-        fontSize: 20,
-        marginBottom: 5,
-        textAlign: "center",
-        width: "80%",
-        fontFamily: "monospace"
-      }}>Quiz Done</Text>
+      <Text
+        style={{
+          fontSize: 20,
+          marginBottom: 5,
+          textAlign: "center",
+          width: "80%",
+          fontFamily: "monospace",
+        }}
+      >
+        Survey Done
+      </Text>
       <Text
         style={{
           marginBottom: 10,
-          fontFamily: "monospace"
+          fontFamily: "monospace",
         }}
-      >Your Answers: {JSON.stringify(quizResultsArray)} </Text>
-      
+      >
+        Your Answers: {JSON.stringify(quizResultsArray)}{" "}
+      </Text>
+
       <CustomButton
         title="Submit"
         onPress={() => {
@@ -32,7 +38,6 @@ export default function QuizDoneScreen(props) {
           props.navigation.navigate("Home");
         }}
       ></CustomButton>
-
     </View>
   );
 }
