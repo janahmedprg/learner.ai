@@ -36,4 +36,5 @@ yarn-error.*
 
 %ProgramData%
 
+.env
 env.js
