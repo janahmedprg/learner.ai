@@ -131,7 +131,7 @@ export default function RadarChart({
   });
 
   for (let i = scaleCount; i >= 0; i--) {
-    groups.push(<G>{scaleShape(columns, i)}</G>);
+    groups.push(<G key={`gR-${i}`}>{scaleShape(columns, i)}</G>);
   }
 
   groups.push(<G key={`groups}`}>{data.map(shape(columns))}</G>);
@@ -143,7 +143,7 @@ export default function RadarChart({
   if (options.showIndicator) {
     for (let i = 0; i <= scaleCount; i++) {
       if (i % numberInterval == 0)
-        groups.push(<G key={`group-eiei`}>{textIndicator(i)}</G>);
+        groups.push(<G key={`group-eiei-${i}`}>{textIndicator(i)}</G>);
     }
   }
   return (
@@ -154,7 +154,7 @@ export default function RadarChart({
       height={graphSize}
       viewBox={`0 0 ${boxSize} ${boxSize}`}
     >
-      <G key={`group`} transform={`translate(${centerPos},${centerPos})`}>
+      <G key={`svgGroup`} transform={`translate(${centerPos},${centerPos})`}>
         {groups}
       </G>
     </Svg>
