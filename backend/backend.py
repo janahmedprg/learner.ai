@@ -71,12 +71,24 @@ def submitStudentAnswers(quizCode: str, answers: list[int], studentId=None):
 def getAverageStudentAnswers(quizCode: str):
     
     student_answers = student_answer_collection.find({"quizCode": quizCode})
+
+    count = student_answer_collection.count_documents({})
     print(student_answers)
 
-    # find average
+    length = len(student_answers[0].get("answers", []))
+    # Initialize a list to store averages
+    averages = [0] * length
     
-
-    return
+    # Calculate the total for each question across all students
+    for doc in student_answers:
+        answers = doc.get("answers", [])
+        for i, ans in enumerate(answers):
+            averages[i] += int(ans)
+    
+    # Calculate the average for each question
+    for i in range(length):
+        averages[i] /= count
+    return averages
 
 # 
 
@@ -134,10 +146,8 @@ def get_average_quiz_endpoint():
 
     if not quizCode:
         return "Please provide quizCode"
-
-    getAverageStudentAnswers(quizCode)
-
-    return "todo"
+    
+    return str(getAverageStudentAnswers(quizCode))
 
 
 """
@@ -159,19 +169,6 @@ def get_average_quiz_endpoint():
 
 
 """
-
-
-
-# todo accept in the body of request instead of just query params
-@app.route("/quiz")
-def accept_quiz_data():
-    quizId = request.args.get("quizId")
-    answers = request.args.get("answers").split(",")
-    
-
-    print(quizId, "quizId")
-    print(answers)
-    return f"{answers}"
 
 
 
