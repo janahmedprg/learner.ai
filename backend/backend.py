@@ -83,7 +83,7 @@ def getAverageStudentAnswers(quizCode: str):
     for doc in student_answers:
         answers = doc.get("answers", [])
         for i, ans in enumerate(answers):
-            averages[i] += int(ans)
+            averages[i] += int(ans) #summation
     
     # Calculate the average for each question
     for i in range(length):
@@ -146,8 +146,7 @@ def get_average_quiz_endpoint():
 
     if not quizCode:
         return "Please provide quizCode"
-    
-    return str(getAverageStudentAnswers(quizCode))
+    return parse_json(getAverageStudentAnswers(quizCode))
 
 
 """
