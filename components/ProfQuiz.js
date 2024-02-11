@@ -3,12 +3,12 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ImageBackground,
   TextInput,
   ScrollView,
 } from "react-native";
 import { styles } from "../styles/ProfQuizStyles";
 import { quizResults } from "./quizData";
+import RadarChart from "./SpiderGraph";
 
 function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
   const handleNewQuiz = () => {
@@ -42,6 +42,51 @@ function QuizResults({ code, setCode, submitted, setSubmitted, tab, setTab }) {
             </Text>
           </TouchableOpacity>
         )}
+        {submitted && (
+          <Text style={[styles.topicsTextCode, { marginTop: 20 }]}>
+            Results from survey: {code}
+          </Text>
+        )}
+        {submitted && (
+          <View style={{ height: 500, width: "100%" }}>
+            <ScrollView
+              style={[styles.scrollView, { marginBottom: 20, marginTop: 20 }]}
+              contentContainerStyle={styles.scrollContainerStyle}
+            >
+              <RadarChart
+                graphSize={400}
+                scaleCount={5}
+                numberInterval={2}
+                data={[
+                  {
+                    Int: 0.7,
+                    Vit: 1,
+                    Str: 0.9,
+                    Def: 0.67,
+                    Agi: 0.8,
+                    Luck: 1,
+                  },
+                  {
+                    Int: 1,
+                    Vit: 0.1,
+                    Str: 0.2,
+                    Def: 0.5,
+                    Agi: 0.8,
+                    Luck: 0.4,
+                  },
+                ]}
+                options={{
+                  graphShape: 1,
+                  showAxis: true,
+                  showIndicator: true,
+                  colorList: ["blue", "red"],
+                  dotList: [false, true],
+                }}
+              />
+            </ScrollView>
+          </View>
+        )}
+        {submitted && <View></View>}
       </View>
     </View>
   );
@@ -186,59 +231,52 @@ function ProfQuiz({ navigation }) {
   const [code, setCode] = useState(randomCode);
 
   return (
-    <ImageBackground
-      source={require("../img/logo1.png")}
-      style={styles.background}
-      resizeMode="contain"
-      opacity={0.2}
-    >
-      <View style={styles.container}>
-        {tab === "quiz" && (
-          <QuizCreate
-            code={code}
-            setCode={setCode}
-            submitted={submitted}
-            setSubmitted={setSubmitted}
-          />
-        )}
-        {tab === "results" && (
-          <QuizResults
-            code={code}
-            setCode={setCode}
-            submitted={submitted}
-            setSubmitted={setSubmitted}
-            tab={tab}
-            setTab={setTab}
-          />
-        )}
-        <View style={styles.footer}>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={[
-                styles.button,
-                (tab === "quiz" || tab === "code") && styles.highlightedButton,
-              ]}
-              onPress={() => setTab("quiz")}
-            >
-              <Text style={styles.buttonText}>Survey</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={[
-                styles.button,
-                tab === "results" && styles.highlightedButton,
-              ]}
-              onPress={() => setTab("results")}
-            >
-              <Text style={styles.buttonText}>Results</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.container}>
+      {tab === "quiz" && (
+        <QuizCreate
+          code={code}
+          setCode={setCode}
+          submitted={submitted}
+          setSubmitted={setSubmitted}
+        />
+      )}
+      {tab === "results" && (
+        <QuizResults
+          code={code}
+          setCode={setCode}
+          submitted={submitted}
+          setSubmitted={setSubmitted}
+          tab={tab}
+          setTab={setTab}
+        />
+      )}
+      <View style={styles.footer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={[
+              styles.button,
+              (tab === "quiz" || tab === "code") && styles.highlightedButton,
+            ]}
+            onPress={() => setTab("quiz")}
+          >
+            <Text style={styles.buttonText}>Survey</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={[
+              styles.button,
+              tab === "results" && styles.highlightedButton,
+            ]}
+            onPress={() => setTab("results")}
+          >
+            <Text style={styles.buttonText}>Results</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
