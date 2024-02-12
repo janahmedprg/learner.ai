@@ -71,6 +71,15 @@ function QuizResults({
     }
     setSpinner(false);
   };
+  const transformedData = data.map((item) => {
+    const transformedItem = {};
+    for (const key in item) {
+      if (Object.hasOwnProperty.call(item, key)) {
+        transformedItem[key] = item[key] / 5;
+      }
+    }
+    return transformedItem;
+  });
 
   return (
     <View style={styles.quizResultsContainer}>
@@ -115,7 +124,7 @@ function QuizResults({
                 graphSize={400}
                 scaleCount={5}
                 numberInterval={2}
-                data={data}
+                data={transformedData}
                 options={{
                   graphShape: 1,
                   showAxis: true,
@@ -412,51 +421,51 @@ function ProfQuiz({ navigation }) {
     if (tab !== "results") {
       if (submitted) {
         setSpinner(true);
-        // let fetchedData; // Declare fetchedData variable
 
-        // fetch(backendUrl + "get-average-quiz?quizCode=" + code)
-        //   .then((response) => {
-        //     // Check if the response is successful
-        //     if (!response.ok) {
-        //       throw new Error("Network response was not ok");
-        //     }
-        //     // Parse the JSON response
-        //     return response.json();
-        //   })
-        //   .then((data) => {
-        //     // Assign the parsed JSON data to fetchedData
-        //     fetchedData = data;
-        //     console.log("Fetched data:", fetchedData);
-        //   })
-        //   .catch((error) => {
-        //     // Handle errors
-        //     console.error("Error fetching data:", error);
-        //   });
-        // fetch(backendUrl + "get-quiz?quizCode=" + code)
-        //   .then((response) => {
-        //     // Check if the response is successful
-        //     if (!response.ok) {
-        //       throw new Error("Network response was not ok");
-        //     }
-        //     // Parse the JSON response
-        //     return response.json();
-        //   })
-        //   .then((data) => {
-        //     // Assign the parsed JSON data to the questionData variable
-        //     questionData = data;
-        //     console.log("Fetched data:", questionData);
-        //   })
-        //   .catch((error) => {
-        //     // Handle errors
-        //     console.error("Error fetching data:", error);
-        //   });
-        // console.log(backendUrl + "get-quiz?quizCode=" + code);
-        // console.log(backendUrl + "get-average-quiz?quizCode=" + code);
-        // console.log(fetchedData);
+        let fetchedData;
 
-        // console.log(questionData);
-        // const transformedData = transformData(questionData, fetchedData);
-        const commaSeparatedString = convertDataToString(data);
+        await fetch(backendUrl + "get-average-quiz?quizCode=" + code)
+          .then((response) => {
+            // Check if the response is successful
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            // Parse the JSON response
+            return response.json();
+          })
+          .then((data) => {
+            fetchedData = data;
+            console.log("Fetched data:", fetchedData);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+        let questionData;
+        await fetch(backendUrl + "get-quiz?quizCode=" + code)
+          .then((response) => {
+            // Check if the response is successful
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            // Parse the JSON response
+            return response.json();
+          })
+          .then((data) => {
+            // Assign the parsed JSON data to the questionData variable
+            questionData = data;
+            console.log("Fetched data:", questionData);
+          })
+          .catch((error) => {
+            // Handle errors
+            console.error("Error fetching data:", error);
+          });
+        console.log(backendUrl + "get-quiz?quizCode=" + code);
+        console.log(backendUrl + "get-average-quiz?quizCode=" + code);
+        console.log(fetchedData);
+
+        console.log(questionData);
+        const transformedData = transformData(questionData, fetchedData);
+        const commaSeparatedString = convertDataToString([transformedData]);
         try {
           const response = await axios.post(
             "https://api.openai.com/v1/chat/completions",
@@ -489,7 +498,7 @@ function ProfQuiz({ navigation }) {
         } catch (error) {
           console.error("Error sending message to ChatGPT:", error);
         }
-        // setData([transformedData]);
+        setData([transformedData]);
         setSpinner(false);
       }
 
